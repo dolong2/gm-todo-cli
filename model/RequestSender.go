@@ -43,9 +43,16 @@ func SendRequest(requestText string) {
 		Backend: genai.BackendGeminiAPI,
 	})
 
+	//TODO 현재까지 기록된 컨텍스트에서 가져와야함
+	var contexts []*genai.Content
+
 	config := &genai.GenerateContentConfig{
 		SystemInstruction: genai.NewContentFromText(prompt, genai.RoleUser),
 		ResponseMIMEType:  "text/plain",
+	}
+
+	for _, request := range genai.Text(requestText) {
+		contexts = append(contexts, request)
 	}
 
 	result, err := client.Models.GenerateContent(
