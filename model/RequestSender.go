@@ -1,5 +1,12 @@
 package model
 
+import (
+	"context"
+	"fmt"
+	"google.golang.org/genai"
+	"os"
+)
+
 const prompt = `
 	The items below are what you must keep.
 
@@ -28,3 +35,29 @@ request: 영화보기, , 내일 20시, , 상
 request: 신규 기능 개발, 이번에 기획된 신규 기능 개발 일정, 2025-06-23, 2025-07-01, 최상
 	you understand: work to do: 신규 기능 개발, details: 이번에 기획된 신규 기능 개발 일정, start date: 2025-06-23, deadline: 2025-07-01, priority: 최상
 `
+
+func SendRequest(requestText string) {
+	ctx := context.Background()
+	client, _ := genai.NewClient(ctx, &genai.ClientConfig{
+		APIKey:  os.Getenv("GEMINI_API_KEY"),
+		Backend: genai.BackendGeminiAPI,
+	})
+
+	config := &genai.GenerateContentConfig{
+		SystemInstruction: genai.NewContentFromText(prompt, genai.RoleUser),
+		ResponseMIMEType:  "text/plain",
+	}
+
+	result, err := client.Models.GenerateContent(
+		ctx,
+		"gemini-2.0-flash",
+		genai.Text(requestText),
+		config,
+	)
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	fmt.Println(result.Text())
+}
