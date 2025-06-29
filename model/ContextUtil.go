@@ -1,9 +1,41 @@
 package model
 
 import (
+	"bufio"
+	"encoding/json"
+	"google.golang.org/genai"
 	"os"
 	"path/filepath"
 )
+
+func saveContext(context []*genai.Content) error {
+	contextToJson, err := json.Marshal(context)
+	if err != nil {
+		return err
+	}
+
+	contextPath, err := getContextFilePath()
+	if err != nil {
+		return err
+	}
+	file, err := os.Create(contextPath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	writer := bufio.NewWriter(file)
+	_, err = writer.WriteString(string(contextToJson))
+	if err != nil {
+		return err
+	}
+	err = writer.Flush()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 
 func getContextFilePath() (string, error) {
 	configDir, err := os.UserConfigDir()
