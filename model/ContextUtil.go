@@ -37,6 +37,28 @@ func saveContext(context []*genai.Content) error {
 	return nil
 }
 
+func getContext() ([]*genai.Content, error) {
+	contextPath, err := getContextFilePath()
+	if err != nil {
+		return nil, err
+	}
+
+	rawContextInfo, err := os.ReadFile(contextPath)
+	if os.IsNotExist(err) {
+		return []*genai.Content{}, nil
+	} else if err != nil {
+		return nil, err
+	}
+
+	contexts := []*genai.Content{}
+	err = json.Unmarshal(rawContextInfo, &contexts)
+	if err != nil {
+		return nil, err
+	}
+
+	return contexts, nil
+}
+
 func getContextFilePath() (string, error) {
 	configDir, err := os.UserConfigDir()
 	if err != nil {
