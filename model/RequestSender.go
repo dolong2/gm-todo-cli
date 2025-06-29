@@ -43,8 +43,10 @@ func SendRequest(requestText string) {
 		Backend: genai.BackendGeminiAPI,
 	})
 
-	//TODO 현재까지 기록된 컨텍스트에서 가져와야함
-	var contexts []*genai.Content
+	var contexts, err = getContext()
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	config := &genai.GenerateContentConfig{
 		SystemInstruction: genai.NewContentFromText(prompt, genai.RoleUser),
@@ -58,7 +60,7 @@ func SendRequest(requestText string) {
 	result, err := client.Models.GenerateContent(
 		ctx,
 		"gemini-2.0-flash",
-		genai.Text(requestText),
+		contexts,
 		config,
 	)
 
@@ -67,4 +69,12 @@ func SendRequest(requestText string) {
 	}
 
 	fmt.Println(result.Text())
+
+	modelResponseContext := genai.Content{Parts: []*genai.Part{{Text: result.Text()}}, Role: genai.RoleModel}
+	contexts = append(contexts, &modelResponseContext)
+
+	err = saveContext(contexts)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
