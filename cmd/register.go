@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
+	"gm-todo/model"
+	"strings"
 )
 
 var registerCmd = &cobra.Command{
@@ -11,8 +11,36 @@ var registerCmd = &cobra.Command{
 	Short: "todo를 등록할 수 있는 커맨드",
 	Long: `todo를 등록할 수 있습니다.
 플래그를 통해 todo의 내용을 지정할 수 있습니다.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("register called")
+	RunE: func(cmd *cobra.Command, args []string) error {
+		workToDo, err := cmd.Flags().GetString("title")
+		if err != nil {
+			return err
+		}
+
+		details, err := cmd.Flags().GetString("details")
+		if err != nil {
+			return err
+		}
+
+		startDate, err := cmd.Flags().GetString("startDate")
+		if err != nil {
+			return err
+		}
+
+		endDate, err := cmd.Flags().GetString("endDate")
+		if err != nil {
+			return err
+		}
+
+		priority, err := cmd.Flags().GetString("priority")
+		if err != nil {
+			return err
+		}
+
+		command := strings.Join([]string{workToDo, details, startDate, endDate, priority}, ", ")
+
+		model.SendRequest(command)
+		return nil
 	},
 }
 
