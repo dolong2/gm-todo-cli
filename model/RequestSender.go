@@ -29,7 +29,7 @@ const prompt = `
 
 	The items below are examples. This is not included in the context.
 		request: 거래처 미팅, 신규 프로젝트 관련 논의, 내일 9시, ,
-		you understand: work to do: 거래처 미팅, details: 신규 프로젝트 관련 논의, start date: 2025-06-24 09:00, deadline: <none>, priority: 판단된 결과
+		you understand: work to do: 거래처 미팅, details: 신규 프로젝트 관련 논의, start date: 2025-06-24 09:00, deadline: <none>, priority: 중
 		request: 영화보기, , 내일 20시, , 상
 		you understand: work to do: 영화보기, details: <none>, start date: 2025-06-24 20:00:00, deadline: <none>, priority: 상
 		request: 신규 기능 개발, 이번에 기획된 신규 기능 개발 일정, 2025-06-23, 2025-07-01, 최상
